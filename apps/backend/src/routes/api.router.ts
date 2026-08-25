@@ -12,6 +12,7 @@ import { SurveyController } from '../controllers/survey.controller.js';
 import { DashboardController } from '../controllers/dashboard.controller.js';
 import { requireAuth, requirePermission } from '../auth/auth.middleware.js';
 import { openApiSpec } from '../openapi/openapi.js';
+import { prisma } from '../db/prisma.js';
 
 const upload = multer({
   storage: multer.memoryStorage(),

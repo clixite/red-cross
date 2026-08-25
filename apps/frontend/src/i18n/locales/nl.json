@@ -1,0 +1,92 @@
+{
+  "app": {
+    "title": "Klantenportaal — Bloeddienst",
+    "tagline": "Bloedtransfusie-instelling",
+    "themeLight": "Licht thema",
+    "themeDark": "Donker thema",
+    "logout": "Afmelden",
+    "user": "Gebruiker",
+    "organization": "Organisatie",
+    "internalStaff": "Bloeddienst Personeel",
+    "backofficeBadge": "Kwaliteitsbeheer"
+  },
+  "nav": {
+    "documents": "Gecontroleerde Documentatie",
+    "complaints": "Mijn Klachten",
+    "newComplaint": "Klacht Indienen",
+    "backofficeComplaints": "Klachtenbeheer",
+    "dashboard": "Dashboard & SLA",
+    "admin": "Beheer",
+    "auditTrail": "Audit Trail",
+    "qualiosSync": "Qualios Synchronisatie"
+  },
+  "auth": {
+    "login": "Professionele Aanmelding",
+    "email": "Professioneel e-mailadres",
+    "password": "Wachtwoord",
+    "submit": "Aanmelden",
+    "mfaPrompt": "Tweefactorauthenticatie (TOTP) Vereist",
+    "mfaCode": "6-cijferige code",
+    "mfaSubmit": "Code valideren",
+    "demoAccountsTitle": "Demorollen (Klik om te testen)",
+    "charterNotice": "Onderworpen aan kwaliteits- en vertrouwelijkheidsregels."
+  },
+  "documents": {
+    "title": "Kwaliteitsdocumentenbibliotheek",
+    "subtitle": "Geldige documenten continu gesynchroniseerd vanuit Qualios",
+    "searchPlaceholder": "Zoeken op titel of referentie...",
+    "allCategories": "Alle categorieën",
+    "reference": "Referentie",
+    "version": "Versie",
+    "appliedOn": "Van toepassing sinds",
+    "download": "Downloaden (Beveiligde PDF)",
+    "checksum": "SHA-256 Checksum",
+    "noDocuments": "Geen documenten beschikbaar voor uw profiel."
+  },
+  "complaint": {
+    "declareTitle": "Kwaliteitsklacht Indienen",
+    "declareSubtitle": "Officiële kwaliteitsregistratie — Behandeling onder SLA",
+    "patientWarning": "STRIKTE WAARSCHUWING: Geen patiëntidentificatiegegevens invoeren (geen INSZ, naam of IPP).",
+    "category": "Categorie van de klacht",
+    "criticality": "Vastgestelde ernst",
+    "incidentDate": "Datum van incident",
+    "description": "Gedetailleerde beschrijving",
+    "patientImpact": "Patiëntimpact",
+    "impactTypology": "Typologie van impact",
+    "productsTitle": "Betrokken Bloedproducten (ISBT 128 Traceerbaarheid)",
+    "addProduct": "+ Eenheid toevoegen",
+    "donationNumber": "Donatienummer (DIN / Eurocode)",
+    "productCode": "Productcode (bv: E0388V00)",
+    "bloodGroup": "Bloedgroep ABO-RhD",
+    "temperature": "Gemeten temperatuur (°C)",
+    "quantity": "Aantal",
+    "attachments": "Bijlagen (temperatuurrapporten, foto's)",
+    "submitBtn": "Klacht verzenden naar Kwaliteitsdienst",
+    "successAck": "Klacht succesvol geregistreerd!",
+    "portalNumberLabel": "Toegewezen dossiernummer",
+    "slaReceivabilityTarget": "Streefdatum ontvankelijkheid",
+    "slaFinalTarget": "Streefdatum definitief antwoord"
+  },
+  "tracking": {
+    "title": "Dossieropvolging",
+    "timeline": "Reglementaire levenscyclus",
+    "slaStatus": "Servicetermijnen & SLA",
+    "slaSuspended": "SLA gepauzeerd in afwachting van aanvullende informatie",
+    "qualiosRef": "Qualios Referentie",
+    "messages": "Directe uitwisseling met Kwaliteitsdienst",
+    "sendReply": "Antwoorden",
+    "messagePlaceholder": "Uw bericht of antwoord op het verzoek...",
+    "internalNote": "Interne notitie (onzichtbaar voor klant)",
+    "conclusionTitle": "Conclusie & Corrigerende Maatregelen",
+    "takeSurvey": "Beoordeel deze afhandeling (CSAT)"
+  },
+  "dashboard": {
+    "title": "Kwaliteit Dashboard & Prestatie-indicatoren",
+    "totalVolume": "Totaal Volume Klachten",
+    "slaCompliance": "SLA Nalevingspercentage",
+    "avgResolution": "Gemiddelde Responstijd",
+    "avgCsat": "Gemiddelde Tevredenheid (CSAT)",
+    "byCategory": "Verdeling per Categorie",
+    "bySegment": "Verdeling per Ziekenhuissegment"
+  }
+}

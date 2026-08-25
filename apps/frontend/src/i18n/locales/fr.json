@@ -1,0 +1,92 @@
+{
+  "app": {
+    "title": "Portail Clients — Service du Sang",
+    "tagline": "Établissement de Transfusion Sanguine",
+    "themeLight": "Thème clair",
+    "themeDark": "Thème sombre",
+    "logout": "Déconnexion",
+    "user": "Utilisateur",
+    "organization": "Organisation",
+    "internalStaff": "Personnel SFS",
+    "backofficeBadge": "Espace Qualité SFS"
+  },
+  "nav": {
+    "documents": "Documentation Contrôlée",
+    "complaints": "Mes Réclamations",
+    "newComplaint": "Déclarer une Réclamation",
+    "backofficeComplaints": "Gestion des Réclamations",
+    "dashboard": "Tableau de Bord & SLA",
+    "admin": "Administration",
+    "auditTrail": "Piste d'Audit",
+    "qualiosSync": "Synchronisation Qualios"
+  },
+  "auth": {
+    "login": "Connexion Professionnelle",
+    "email": "Adresse email professionnelle",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "mfaPrompt": "Double Facteur TOTP Requis",
+    "mfaCode": "Code à 6 chiffres (Google Authenticator)",
+    "mfaSubmit": "Valider le code",
+    "demoAccountsTitle": "Comptes de Démonstration (Cliquez pour tester)",
+    "charterNotice": "Plateforme soumise aux règles de confidentialité et de conformité transfusionnelle."
+  },
+  "documents": {
+    "title": "Bibliothèque Documentaire Qualité",
+    "subtitle": "Documents en vigueur synchronisés en continu depuis Qualios",
+    "searchPlaceholder": "Rechercher par titre ou référence...",
+    "allCategories": "Toutes les catégories",
+    "reference": "Référence",
+    "version": "Version",
+    "appliedOn": "En vigueur le",
+    "download": "Télécharger (PDF sécurisé)",
+    "checksum": "Empreinte SHA-256",
+    "noDocuments": "Aucun document contrôlé disponible pour votre profil."
+  },
+  "complaint": {
+    "declareTitle": "Déclaration d'une Réclamation Qualité",
+    "declareSubtitle": "Enregistrement qualité officiel — Traitement immédiat sous SLA opposables",
+    "patientWarning": "AVERTISSEMENT STRICT : N'inscrivez aucune donnée permettant d'identifier un patient (aucun NISS, nom de patient ou IPP).",
+    "category": "Catégorie de la réclamation",
+    "criticality": "Criticité constatée",
+    "incidentDate": "Date de survenue",
+    "description": "Description détaillée de l'incident",
+    "patientImpact": "Impact patient",
+    "impactTypology": "Typologie d'impact",
+    "productsTitle": "Produits Sanguins Concernés (Traçabilité ISBT 128)",
+    "addProduct": "+ Ajouter une unité / poche",
+    "donationNumber": "N° de don (DIN / Eurocode)",
+    "productCode": "Code Produit (ex: E0388V00)",
+    "bloodGroup": "Groupe ABO-RhD",
+    "temperature": "Température relevée (°C)",
+    "quantity": "Quantité",
+    "attachments": "Pièces jointes (relevés température, photos)",
+    "submitBtn": "Transmettre la déclaration au Service Qualité",
+    "successAck": "Réclamation enregistrée avec succès !",
+    "portalNumberLabel": "Numéro de dossier attribué",
+    "slaReceivabilityTarget": "Date cible de recevabilité",
+    "slaFinalTarget": "Date cible de réponse finale"
+  },
+  "tracking": {
+    "title": "Suivi du Dossier",
+    "timeline": "Cycle de vie réglementaire",
+    "slaStatus": "Indicateurs de Délai & SLA",
+    "slaSuspended": "Chronomètre SLA suspendu en attente d'information complémentaire",
+    "qualiosRef": "Référence Qualios NC",
+    "messages": "Fil d'échanges direct avec l'équipe Qualité",
+    "sendReply": "Répondre",
+    "messagePlaceholder": "Votre message ou réponse à la demande de complément...",
+    "internalNote": "Note interne SFS (invisible pour le client)",
+    "conclusionTitle": "Conclusion & Actions Correctives (CAPA)",
+    "takeSurvey": "Évaluer le traitement de cette réclamation (CSAT)"
+  },
+  "dashboard": {
+    "title": "Tableau de Bord & Indicateurs de Performance Qualité",
+    "totalVolume": "Volume Total Réclamations",
+    "slaCompliance": "Taux de Respect des SLA",
+    "avgResolution": "Délai Moyen de Réponse",
+    "avgCsat": "Satisfaction Moyenne (CSAT)",
+    "byCategory": "Répartition par Catégorie",
+    "bySegment": "Répartition par Segment Hospitalier"
+  }
+}

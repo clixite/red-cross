@@ -1,0 +1,92 @@
+{
+  "app": {
+    "title": "Client Portal — Blood Service",
+    "tagline": "Blood Transfusion Establishment",
+    "themeLight": "Light theme",
+    "themeDark": "Dark theme",
+    "logout": "Sign out",
+    "user": "User",
+    "organization": "Organization",
+    "internalStaff": "Blood Service Staff",
+    "backofficeBadge": "Quality Management"
+  },
+  "nav": {
+    "documents": "Controlled Documentation",
+    "complaints": "My Complaints",
+    "newComplaint": "File a Complaint",
+    "backofficeComplaints": "Complaint Management",
+    "dashboard": "Dashboard & SLA",
+    "admin": "Administration",
+    "auditTrail": "Audit Trail",
+    "qualiosSync": "Qualios Synchronization"
+  },
+  "auth": {
+    "login": "Professional Sign In",
+    "email": "Professional Email Address",
+    "password": "Password",
+    "submit": "Sign In",
+    "mfaPrompt": "Two-Factor Authentication (TOTP) Required",
+    "mfaCode": "6-digit code",
+    "mfaSubmit": "Validate code",
+    "demoAccountsTitle": "Demo Roles (Click to test)",
+    "charterNotice": "Subject to strict transfusion quality and confidentiality regulations."
+  },
+  "documents": {
+    "title": "Controlled Quality Documentation",
+    "subtitle": "Effective documents synchronized continuously from Qualios",
+    "searchPlaceholder": "Search by title or reference...",
+    "allCategories": "All categories",
+    "reference": "Reference",
+    "version": "Version",
+    "appliedOn": "Effective date",
+    "download": "Download (Secure PDF)",
+    "checksum": "SHA-256 Checksum",
+    "noDocuments": "No controlled documents available for your profile."
+  },
+  "complaint": {
+    "declareTitle": "File a Quality Complaint",
+    "declareSubtitle": "Official quality record — Processed under binding SLAs",
+    "patientWarning": "STRICT WARNING: Do not enter any identifying patient data (no Belgian national number, patient name, or hospital ID).",
+    "category": "Complaint category",
+    "criticality": "Observed criticality",
+    "incidentDate": "Date of incident",
+    "description": "Detailed incident description",
+    "patientImpact": "Patient impact",
+    "impactTypology": "Impact typology",
+    "productsTitle": "Concerned Blood Products (ISBT 128 Traceability)",
+    "addProduct": "+ Add blood unit",
+    "donationNumber": "Donation number (DIN / Eurocode)",
+    "productCode": "Product code (e.g. E0388V00)",
+    "bloodGroup": "ABO-RhD Blood group",
+    "temperature": "Measured temperature (°C)",
+    "quantity": "Quantity",
+    "attachments": "Attachments (temperature logs, photos)",
+    "submitBtn": "Submit complaint to Quality Service",
+    "successAck": "Complaint successfully registered!",
+    "portalNumberLabel": "Assigned Case Number",
+    "slaReceivabilityTarget": "Receivability Target Date",
+    "slaFinalTarget": "Final Response Target Date"
+  },
+  "tracking": {
+    "title": "Case Tracking",
+    "timeline": "Regulatory Lifecycle",
+    "slaStatus": "Turnaround Times & SLA",
+    "slaSuspended": "SLA timer paused awaiting additional information",
+    "qualiosRef": "Qualios Non-Conformity Ref",
+    "messages": "Direct discussion with Quality Service",
+    "sendReply": "Send reply",
+    "messagePlaceholder": "Your message or response...",
+    "internalNote": "Internal SFS Note (invisible to client)",
+    "conclusionTitle": "Conclusion & Corrective Actions (CAPA)",
+    "takeSurvey": "Evaluate this resolution (CSAT)"
+  },
+  "dashboard": {
+    "title": "Quality Performance Dashboard & SLAs",
+    "totalVolume": "Total Complaints Volume",
+    "slaCompliance": "SLA Compliance Rate",
+    "avgResolution": "Average Response Time",
+    "avgCsat": "Average Satisfaction (CSAT)",
+    "byCategory": "Breakdown by Category",
+    "bySegment": "Breakdown by Hospital Segment"
+  }
+}
