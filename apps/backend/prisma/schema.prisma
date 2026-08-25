@@ -1,0 +1,417 @@
+// Prisma Schema - Portail Clients Service du Sang (Croix-Rouge de Belgique)
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum OrgType {
+  banque_sang_hospitaliere
+  laboratoire_recherche
+  etablissement_enseignement
+  praticien
+  autre
+}
+
+enum OrgStatus {
+  active
+  suspendue
+  archivee
+}
+
+enum RoleEnum {
+  declarant
+  referent_qualite
+  lecteur
+  agent_reception
+  responsable_qualite
+  administrateur
+  lecteur_direction
+}
+
+enum UserStatusEnum {
+  invited
+  active
+  suspended
+  archived
+}
+
+enum LangEnum {
+  fr
+  nl
+  en
+}
+
+enum DocType {
+  procedure
+  mode_operatoire
+  notice
+  formulaire
+  fiche_technique
+  certificat
+  bulletin_information
+}
+
+enum DocStatus {
+  en_vigueur
+  retire
+}
+
+enum ComplaintCat {
+  produit_sanguin
+  transport_chaine_du_froid
+  delai_disponibilite
+  analyse_resultat
+  documentation
+  livraison_conditionnement
+  relationnel_service
+  facturation
+  autre
+}
+
+enum CriticalityLevel {
+  mineure
+  majeure
+  critique
+}
+
+enum ComplaintStat {
+  brouillon
+  soumise
+  recue
+  en_analyse_recevabilite
+  irrecevable
+  en_investigation
+  information_complementaire_demandee
+  conclue
+  cloturee
+}
+
+enum PatientImpactEnum {
+  oui
+  non
+  inconnu
+}
+
+enum PatientImpactTypo {
+  aucun
+  retard_transfusionnel
+  effet_indesirable_receveur
+  reaction_transfusionnelle_grave
+  destruction_produit_sans_impact
+  autre_impact
+}
+
+enum BloodGroupEnum {
+  A_POS  @map("A+")
+  A_NEG  @map("A-")
+  B_POS  @map("B+")
+  B_NEG  @map("B-")
+  AB_POS @map("AB+")
+  AB_NEG @map("AB-")
+  O_POS  @map("O+")
+  O_NEG  @map("O-")
+}
+
+enum EventVis {
+  interne_sfs
+  partage_client
+}
+
+enum OutboxStat {
+  pending
+  processing
+  completed
+  failed
+  dead_letter
+}
+
+// -----------------------------------------------------------------------------
+// Modèles Relationnels
+// -----------------------------------------------------------------------------
+
+model Organization {
+  id              String         @id @default(uuid())
+  type            OrgType
+  name            String
+  businessNumber  String?        // BCE / N° Entreprise Belge
+  siteName        String?
+  address         String
+  defaultLanguage LangEnum       @default(fr)
+  status          OrgStatus      @default(active)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  users           User[]
+  complaints      Complaint[]
+  surveys         SatisfactionSurvey[]
+
+  @@map("organizations")
+}
+
+model User {
+  id                    String          @id @default(uuid())
+  organizationId        String?
+  email                 String          @unique
+  passwordHash          String?
+  firstName             String
+  lastName              String
+  jobTitle              String?
+  language              LangEnum        @default(fr)
+  roles                 RoleEnum[]      @default([declarant])
+  mfaEnabled            Boolean         @default(false)
+  mfaSecret             String?
+  status                UserStatusEnum  @default(invited)
+  invitationToken       String?         @unique
+  invitationExpiresAt   DateTime?
+  lastLoginAt           DateTime?
+  consentQualityCharter Boolean         @default(false)
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  organization          Organization?   @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  complaintsDeclared    Complaint[]     @relation("DeclarantRelation")
+
+  @@map("users")
+}
+
+model Document {
+  id                String       @id @default(uuid())
+  qualiosReference  String       @unique
+  titleFr           String
+  titleNl           String?
+  titleEn           String?
+  descriptionFr     String?
+  descriptionNl     String?
+  descriptionEn     String?
+  type              DocType
+  version           String
+  applicationDate   DateTime
+  status            DocStatus    @default(en_vigueur)
+  checksum          String
+  storageKey        String
+  fileSizeBytes     Int          @default(0)
+  mimeType          String       @default("application/pdf")
+  lastSyncAt        DateTime     @default(now())
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  audiences         DocumentAudience[]
+
+  @@map("documents")
+}
+
+model DocumentAudience {
+  id               String       @id @default(uuid())
+  documentId       String
+  allowedOrgTypes  OrgType[]
+  allowedOrgIds    String[]     @default([])
+  allowedRoles     RoleEnum[]   @default([])
+
+  document         Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("document_audiences")
+}
+
+model Complaint {
+  id                         String            @id @default(uuid())
+  portalNumber               String            @unique // SFS-AAAA-NNNNN
+  organizationId             String
+  declarantId                String
+  entryChannel               String            @default("portal")
+  incidentDate               DateTime
+  declarationDate            DateTime          @default(now())
+  category                   ComplaintCat
+  subCategory                String?
+  declaredCriticality        CriticalityLevel
+  validatedCriticality       CriticalityLevel?
+  description                String
+  patientImpact              PatientImpactEnum
+  patientImpactTypology      PatientImpactTypo @default(aucun)
+  status                     ComplaintStat     @default(brouillon)
+  qualiosNonConformityRef    String?
+  slaTargetReceivabilityAt   DateTime?
+  slaTargetFinalResponseAt   DateTime?
+  slaSuspendedAt             DateTime?
+  slaTotalSuspensionHours    Int               @default(0)
+  conclusion                 String?
+  correctiveActionsSummary   String?
+  closedAt                   DateTime?
+  rejectionReason            String?
+  createdAt                  DateTime          @default(now())
+  updatedAt                  DateTime          @updatedAt
+
+  organization               Organization      @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  declarant                  User              @relation("DeclarantRelation", fields: [declarantId], references: [id], onDelete: Restrict)
+  products                   ConcernedProduct[]
+  events                     ComplaintEvent[]
+  messages                   Message[]
+  attachments                Attachment[]
+  satisfactionSurvey         SatisfactionSurvey?
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([category])
+  @@map("complaints")
+}
+
+model ConcernedProduct {
+  id                  String          @id @default(uuid())
+  complaintId         String
+  productCode         String
+  donationNumber      String
+  bloodGroup          BloodGroupEnum?
+  expirationDate      DateTime?
+  quantity            Int             @default(1)
+  measuredTemperature Float?
+
+  complaint           Complaint       @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  @@map("concerned_products")
+}
+
+model ComplaintEvent {
+  id                 String          @id @default(uuid())
+  complaintId        String
+  transitionType     String
+  fromStatus         ComplaintStat?
+  toStatus           ComplaintStat
+  authorId           String
+  authorName         String
+  authorOrganization String
+  comment            String?
+  visibility         EventVis        @default(partage_client)
+  createdAt          DateTime        @default(now())
+
+  complaint          Complaint       @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+
+  @@index([complaintId])
+  @@map("complaint_events")
+}
+
+model Message {
+  id                 String          @id @default(uuid())
+  complaintId        String
+  authorId           String
+  authorName         String
+  authorRole         RoleEnum
+  authorOrganization String
+  visibility         EventVis        @default(partage_client)
+  content            String
+  readByDeclarant    Boolean         @default(false)
+  readBySFS          Boolean         @default(false)
+  readAt             DateTime?
+  createdAt          DateTime        @default(now())
+
+  complaint          Complaint       @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  attachments        Attachment[]
+
+  @@map("messages")
+}
+
+model Attachment {
+  id               String       @id @default(uuid())
+  complaintId      String?
+  messageId        String?
+  fileName         String
+  fileSizeBytes    Int
+  mimeType         String
+  storageKey       String
+  antivirusStatus  String       @default("clean") // clean, pending, infected
+  uploadedById     String
+  createdAt        DateTime     @default(now())
+
+  complaint        Complaint?   @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  message          Message?     @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@map("attachments")
+}
+
+model SatisfactionSurvey {
+  id             String       @id @default(uuid())
+  complaintId    String       @unique
+  organizationId String
+  scoreCsat      Int          // 1-5
+  verbatim       String?
+  reminderSent   Boolean      @default(false)
+  respondedAt    DateTime?
+  createdAt      DateTime     @default(now())
+
+  complaint      Complaint    @relation(fields: [complaintId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@map("satisfaction_surveys")
+}
+
+model AuditLog {
+  id             String       @id @default(uuid())
+  timestamp      DateTime     @default(now())
+  actorId        String
+  actorEmail     String
+  actorRole      String
+  actorOrgId     String?
+  action         String
+  entityType     String
+  entityId       String
+  previousValues Json?
+  newValues      Json?
+  ipAddress      String
+  userAgent      String?
+
+  @@index([entityType, entityId])
+  @@index([timestamp])
+  @@map("audit_logs")
+}
+
+model SyncLog {
+  id               String       @id @default(uuid())
+  timestamp        DateTime     @default(now())
+  direction        String       // OUTBOUND, INBOUND
+  adapter          String       // rest, file, manual
+  entityType       String       // complaint, document
+  entityId         String
+  qualiosRef       String?
+  status           String       // SUCCESS, FAILED, RETRYING
+  latencyMs        Int          @default(0)
+  attemptNumber    Int          @default(1)
+  payloadTruncated String?
+  errorMessage     String?
+
+  @@index([timestamp])
+  @@map("sync_logs")
+}
+
+model OutboxTask {
+  id             String       @id @default(uuid())
+  idempotencyKey String       @unique
+  taskType       String
+  payload        Json
+  status         OutboxStat   @default(pending)
+  retries        Int          @default(0)
+  maxRetries     Int          @default(5)
+  nextRetryAt    DateTime?
+  lastError      String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([status, nextRetryAt])
+  @@map("outbox_tasks")
+}
+
+model NotificationLog {
+  id             String       @id @default(uuid())
+  recipientEmail String
+  recipientName  String
+  language       LangEnum
+  subject        String
+  bodyText       String
+  sentAt         DateTime     @default(now())
+  status         String       @default("SENT") // SENT, FAILED
+
+  @@index([sentAt])
+  @@map("notification_logs")
+}
