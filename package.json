@@ -1,0 +1,23 @@
+{
+  "name": "portail-clients-service-du-sang",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portail Clients B2B Multi-Tenant - Service du Sang (Croix-Rouge de Belgique)",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "seed": "npm run seed --workspace=apps/backend",
+    "start:backend": "npm run dev --workspace=apps/backend",
+    "start:frontend": "npm run dev --workspace=apps/frontend",
+    "start:mock": "npm run dev --workspace=apps/mock-qualios"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

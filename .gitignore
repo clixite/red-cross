@@ -1,0 +1,14 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+coverage/
+*.log
+.DS_Store
+.turbo/
+apps/backend/uploads/*
+!apps/backend/uploads/.gitkeep
+apps/backend/quarantine/*
+!apps/backend/quarantine/.gitkeep
+data/
