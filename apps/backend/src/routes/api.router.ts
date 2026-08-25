@@ -93,3 +93,32 @@ apiRouter.get('/surveys', requireAuth, requirePermission('surveys:manage_export'
 // Tableaux de Bord & Indicateurs Qualité
 // -----------------------------------------------------------------------------
 apiRouter.get('/dashboard/metrics', requireAuth, DashboardController.getMetrics);
+
+// -----------------------------------------------------------------------------
+// Intégration & Synchronisation Qualios
+// -----------------------------------------------------------------------------
+apiRouter.get('/qualios/sync-logs', requireAuth, requirePermission('qualios:manage_sync'), async (req, res) => {
+  const logs = await prisma.syncLog.findMany({ orderBy: { timestamp: 'desc' }, take: 100 });
+  res.json(logs);
+});
+
+apiRouter.get('/qualios/outbox/tasks', requireAuth, requirePermission('qualios:manage_sync'), async (req, res) => {
+  const tasks = await prisma.outboxTask.findMany({ orderBy: { createdAt: 'desc' }, take: 100 });
+  res.json(tasks);
+});
+
+apiRouter.post('/qualios/outbox/retry/:id', requireAuth, requirePermission('qualios:manage_sync'), async (req, res) => {
+  const { id } = req.params;
+  const updated = await prisma.outboxTask.update({
+    where: { id },
+    data: { status: 'pending', retries: 0, nextRetryAt: null },
+  });
+  res.json({ success: true, updated });
+});
+
+apiRouter.post('/qualios/reconcile', requireAuth, requirePermission('qualios:manage_sync'), async (req, res) => {
+  const { OutboxWorker } = await import('../qualios/outbox.worker.js');
+  const result = await OutboxWorker.runNightlyReconciliation();
+  res.json(result);
+});
+
