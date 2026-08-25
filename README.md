@@ -20,12 +20,14 @@ docker compose up --build
 Cette commande démarre l'ensemble de la plateforme :
 | Service | URL | Rôle |
 |---|---|---|
-| **Frontend (SPA)** | http://localhost:3000 | Portail clients & back-office SFS |
+| **Frontend (SPA)** | http://localhost:3005 | Portail clients & back-office SFS |
 | **API REST v1** | http://localhost:4000/api/v1 | Backend Express |
 | **OpenAPI 3.1** | http://localhost:4000/api/v1/openapi.json | Spécification générée |
 | **Mock Qualios** | http://localhost:4010 | Simulateur QMS Qualnet |
 | **MinIO Console** | http://localhost:9001 | Stockage objets (minioadmin / minioadmin123) |
 | **PostgreSQL** | localhost:5432 | Base relationnelle |
+
+> Si le port 3000 est occupé sur votre poste, le frontend est publié sur **3005** par défaut dans `docker-compose.yml`.
 
 > Les migrations Prisma et le jeu de données de démonstration sont appliqués automatiquement au premier démarrage (idempotent : réinitialisation avec `FORCE_SEED=1`).
 
