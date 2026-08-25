@@ -1,0 +1,25 @@
+# Routes Traefik — Portail SFS (redcross.clixite-prod.cloud)
+# À déposer dans /docker/traefik-svsx/config/ sur le serveur (file provider avec watch).
+# Le conteneur frontend (sfs-frontend) doit être rattaché au réseau externe "proxy".
+http:
+  routers:
+    redcross:
+      rule: "Host(`redcross.clixite-prod.cloud`)"
+      entrypoints: [websecure]
+      tls:
+        certResolver: le
+      service: redcross-frontend-svc
+      middlewares: [security-headers, rate-limit]
+
+    redcross-http:
+      rule: "Host(`redcross.clixite-prod.cloud`)"
+      entrypoints: [web]
+      service: redcross-frontend-svc
+      middlewares: [redirect-https]
+
+  services:
+    redcross-frontend-svc:
+      loadBalancer:
+        servers:
+          - url: "http://sfs-frontend:80"
+        passHostHeader: true
