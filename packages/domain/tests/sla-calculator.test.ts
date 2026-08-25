@@ -39,4 +39,49 @@ describe('SlaCalculator (Délais, Jours Ouvrés Belges & Suspensions)', () => {
     expect(result.addedSuspensionHours).toBe(72);
     expect(result.updatedTarget.getUTCDate()).toBe(4); // 1er juin + 3 jours = 4 juin
   });
+
+  it('évalue le respect des SLA avec jours restants et dépassements', () => {
+    const now = new Date('2025-06-01T00:00:00Z');
+    const future = new Date('2025-06-15T00:00:00Z');
+    const past = new Date('2025-05-20T00:00:00Z');
+
+    const ok = SlaCalculator.evaluateSlaStatus({
+      declarationDate: new Date('2025-05-01T00:00:00Z'),
+      targetReceivabilityDate: future,
+      targetFinalResponseDate: future,
+      currentDate: now,
+    });
+    expect(ok.isReceivabilityOverdue).toBe(false);
+    expect(ok.isFinalResponseOverdue).toBe(false);
+    expect(ok.receivabilityRemainingHours).toBeGreaterThan(0);
+
+    const overdue = SlaCalculator.evaluateSlaStatus({
+      declarationDate: new Date('2025-04-01T00:00:00Z'),
+      targetReceivabilityDate: past,
+      targetFinalResponseDate: past,
+      isClosed: false,
+      currentDate: now,
+    });
+    expect(overdue.isReceivabilityOverdue).toBe(true);
+    expect(overdue.isFinalResponseOverdue).toBe(true);
+
+    // Pas de dépassement imputé pendant une suspension
+    const suspended = SlaCalculator.evaluateSlaStatus({
+      declarationDate: new Date('2025-04-01T00:00:00Z'),
+      targetFinalResponseDate: past,
+      isClosed: false,
+      suspendedAt: new Date('2025-05-25T00:00:00Z'),
+      currentDate: now,
+    });
+    expect(suspended.isSuspended).toBe(true);
+    expect(suspended.isFinalResponseOverdue).toBe(false);
+  });
+
+  it('ne compte pas les samedis et dimanches comme jours ouvrés', () => {
+    // Samedi 3 mai 2025 et dimanche 4 mai 2025
+    expect(SlaCalculator.isBusinessDay(new Date('2025-05-03T00:00:00Z'))).toBe(false);
+    expect(SlaCalculator.isBusinessDay(new Date('2025-05-04T00:00:00Z'))).toBe(false);
+    // Vendredi 2 mai 2025 est ouvré
+    expect(SlaCalculator.isBusinessDay(new Date('2025-05-02T00:00:00Z'))).toBe(true);
+  });
 });

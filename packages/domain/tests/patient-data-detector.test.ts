@@ -35,4 +35,23 @@ describe('PatientDataDetector (RGPD & Détection Données de Santé)', () => {
     expect(scanResult.hasPatientData).toBe(true);
     expect(scanResult.detectedPatterns.some((p) => p.includes('IPP/NIP/DPI'))).toBe(true);
   });
+
+  it('bloque la mention nominative explicite de patient dans un message', () => {
+    const text = 'Le patient : Martin Dupont a présenté une réaction après la poche.';
+    const scanResult = PatientDataDetector.scan(text);
+    expect(scanResult.hasPatientData).toBe(true);
+    expect(scanResult.detectedPatterns.some((p) => p.includes('nominative'))).toBe(true);
+  });
+
+  it('rejette les numéros NISS mal formés ou invalides (modulo 97)', () => {
+    expect(PatientDataDetector.isValidBelgianNISS('85.04.12-123.99')).toBe(false); // checksum faux
+    expect(PatientDataDetector.isValidBelgianNISS('12345')).toBe(false); // trop court
+    expect(PatientDataDetector.isValidBelgianNISS('')).toBe(false);
+  });
+
+  it('ne lève pas d alerte sur une chaîne vide ou absente', () => {
+    expect(PatientDataDetector.scan(null).hasPatientData).toBe(false);
+    expect(PatientDataDetector.scan(undefined).hasPatientData).toBe(false);
+    expect(PatientDataDetector.scan('').hasPatientData).toBe(false);
+  });
 });

@@ -16,6 +16,11 @@ import { NotificationService } from '../notifications/notification.service.js';
 import crypto from 'crypto';
 
 export class ComplaintController {
+  private static BLOOD_GROUP_TO_ENUM: Record<string, string> = {
+    'A+': 'A_POS', 'A-': 'A_NEG', 'B+': 'B_POS', 'B-': 'B_NEG',
+    'AB+': 'AB_POS', 'AB-': 'AB_NEG', 'O+': 'O_POS', 'O-': 'O_NEG',
+  };
+
   /**
    * Génère le numéro séquentiel unique de réclamation: SFS-AAAA-NNNNN
    */
@@ -219,7 +224,7 @@ export class ComplaintController {
               create: products.map((p: any) => ({
                 productCode: p.productCode.trim().toUpperCase(),
                 donationNumber: p.donationNumber.trim().toUpperCase(),
-                bloodGroup: p.bloodGroup as any,
+                bloodGroup: p.bloodGroup ? (ComplaintController.BLOOD_GROUP_TO_ENUM[p.bloodGroup] as any) : undefined,
                 quantity: p.quantity ? parseInt(p.quantity, 10) : 1,
                 measuredTemperature: p.measuredTemperature ? parseFloat(p.measuredTemperature) : null,
               })),
