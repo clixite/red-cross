@@ -1,9 +1,9 @@
 import React from 'react';
 
 /**
- * Logo neutre et original du portail — monogramme « goutte de sang » stylisé.
- * Aucun emblème protégé (Conventions de Genève) ni charte d'organisation réelle.
- * Couleurs issues des jetons de design brand (paramétrables via CSS variables).
+ * Logo du portail — croix rouge stylisée sur badge blanc.
+ * Reprend le code visuel universel du secours (croix rouge sur fond blanc),
+ * couleurs paramétrables via les jetons CSS --brand-red-* et --brand-border.
  */
 export const Logo: React.FC<{ size?: number; className?: string }> = ({ size = 36, className }) => {
   return (
@@ -12,33 +12,24 @@ export const Logo: React.FC<{ size?: number; className?: string }> = ({ size = 3
       height={size}
       viewBox="0 0 64 64"
       role="img"
-      aria-label="Logo SFS — Service du Sang"
+      aria-label="Logo Croix-Rouge — Service du Sang"
       className={className}
     >
       <defs>
-        <linearGradient id="sfsLogoGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="var(--brand-500, #2563eb)" />
-          <stop offset="100%" stopColor="var(--brand-700, #1e40af)" />
+        <linearGradient id="sfsLogoRed" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="var(--brand-red-500, #ef4444)" />
+          <stop offset="100%" stopColor="var(--brand-red-700, #b91c1c)" />
         </linearGradient>
       </defs>
 
-      {/* Badge arrondi */}
-      <rect width="64" height="64" rx="14" fill="url(#sfsLogoGrad)" />
+      {/* Badge blanc arrondi avec bordure fine (lisible sur fond clair et sombre) */}
+      <rect width="64" height="64" rx="14" fill="#ffffff" />
+      <rect width="64" height="64" rx="14" fill="none" stroke="var(--brand-border, #e2e8f0)" strokeWidth="2" />
 
-      {/* Goutte stylisée (symbole transfusionnel générique) */}
+      {/* Croix rouge — bras égaux, centrée */}
       <path
-        d="M32 11.5 C 32 11.5, 16.5 30, 16.5 39.5 A 15.5 15.5 0 0 0 47.5 39.5 C 47.5 30, 32 11.5, 32 11.5 Z"
-        fill="#ffffff"
-      />
-
-      {/* Reflet de la goutte */}
-      <ellipse cx="26.5" cy="34" rx="4" ry="7.5" fill="#ffffff" opacity="0.35" transform="rotate(28 26.5 34)" />
-
-      {/* Micro-goutte interne (profondeur) */}
-      <path
-        d="M32 31.5 C 32 31.5, 26 39, 26 43.5 A 6 6 0 0 0 38 43.5 C 38 39, 32 31.5, 32 31.5 Z"
-        fill="var(--brand-600, #1d4ed8)"
-        opacity="0.85"
+        d="M26 12 H38 V26 H52 V38 H38 V52 H26 V38 H12 V26 H26 Z"
+        fill="url(#sfsLogoRed)"
       />
     </svg>
   );
