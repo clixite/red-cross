@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ApiClient } from '../api/client.js';
 import { useAuth } from '../context/AuthContext.js';
 import { KeyRound, ArrowRight, UserCheck } from 'lucide-react';
+import { Logo } from '../components/Logo.js';
 
 export const LoginView: React.FC = () => {
   const { t } = useTranslation();
@@ -103,9 +104,7 @@ export const LoginView: React.FC = () => {
     <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white dark:bg-slate-900 p-8 rounded-xl shadow-md border border-slate-200 dark:border-slate-800">
         <div className="text-center">
-          <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl mx-auto shadow-md">
-            SFS
-          </div>
+          <Logo size={56} className="mx-auto shadow-md rounded-2xl" />
           <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
             {t('auth.login')}
           </h1>

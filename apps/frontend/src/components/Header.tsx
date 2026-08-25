@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext.js';
 import { Globe, Moon, Sun, LogOut } from 'lucide-react';
+import { Logo } from './Logo.js';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -19,11 +20,9 @@ export const Header: React.FC<HeaderProps> = ({ darkMode, setDarkMode }) => {
   return (
     <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand placeholder (Neutral, non-licensed) */}
+        {/* Brand : logo neutre original (placeholder de marque, sans emblème protégé) */}
         <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
-            SFS
-          </div>
+          <Logo size={36} className="shadow-sm" />
           <div>
             <div className="font-bold text-base text-slate-900 dark:text-white flex items-center space-x-2">
               <span>{t('app.title')}</span>
