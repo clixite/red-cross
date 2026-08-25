@@ -1,11 +1,7 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
-COPY package*.json tsconfig.base.json ./
-COPY packages/domain/package.json ./packages/domain/
-COPY apps/frontend/package.json ./apps/frontend/
+COPY . .
 RUN npm ci
-COPY packages/domain ./packages/domain
-COPY apps/frontend ./apps/frontend
 RUN npm run build --workspace=@sfs/frontend
 
 FROM nginx:1.25-alpine

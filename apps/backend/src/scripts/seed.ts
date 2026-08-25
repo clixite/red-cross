@@ -283,6 +283,13 @@ const ALL_COMPLAINTS = [...COMPLAINTS, ...buildGeneratedComplaints()];
 async function main() {
   console.log('[SEED] Démarrage de l initialisation des données de démonstration...');
 
+  // Idempotence : si des données existent déjà, on ne réinitialise pas (sauf FORCE_SEED=1)
+  const existingOrgs = await prisma.organization.count();
+  if (existingOrgs > 0 && process.env.FORCE_SEED !== '1') {
+    console.log(`[SEED] Base déjà initialisée (${existingOrgs} organisations). Réinitialisation ignorée. Utilisez FORCE_SEED=1 pour recharger.`);
+    return;
+  }
+
   // 1. Nettoyage (aucune donnée qualité réelle, il s agit d un environnement de démo)
   await prisma.$transaction([
     prisma.auditLog.deleteMany(),
