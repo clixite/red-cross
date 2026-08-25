@@ -88,5 +88,21 @@
     "avgCsat": "Gemiddelde Tevredenheid (CSAT)",
     "byCategory": "Verdeling per Categorie",
     "bySegment": "Verdeling per Ziekenhuissegment"
+  },
+  "footer": {
+    "gdpr": {
+      "title": "Bescherming persoonsgegevens (AVG)",
+      "text": "Conform de AVG (EU) 2016/679 en de Belgische wet van 30 juli 2018. U heeft recht op inzage, rectificatie en wissing — neem contact op met onze DPO: dpo@service-du-sang.be"
+    },
+    "nis2": {
+      "title": "Cyberbeveiliging (NIS2)",
+      "text": "Richtlijn (EU) 2022/2555 omgezet in Belgisch recht bij wet van 26 april 2024. Cyberbeveiligingsmaatregelen onder toezicht van het Centrum voor Cybersecurity België (CCB)."
+    },
+    "aiAct": {
+      "title": "Artificiële intelligentie (AI-verordening)",
+      "text": "Verordening (EU) 2024/1689: er worden geen geautomatiseerde beslissingen op basis van AI genomen bij de behandeling van klachten."
+    },
+    "copyright": "© 2026 Bloedtransfusiedienst — Belgische Rode Kruis. Alle rechten voorbehouden.",
+    "legalRefs": "Gegevensbeschermingsautoriteit (GBA) · Centrum voor Cybersecurity België (CCB)"
   }
 }

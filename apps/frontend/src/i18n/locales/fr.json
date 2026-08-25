@@ -88,5 +88,21 @@
     "avgCsat": "Satisfaction Moyenne (CSAT)",
     "byCategory": "Répartition par Catégorie",
     "bySegment": "Répartition par Segment Hospitalier"
+  },
+  "footer": {
+    "gdpr": {
+      "title": "Protection des données (RGPD)",
+      "text": "Conformité au règlement (UE) 2016/679 et à la loi belge du 30 juillet 2018. Vous disposez de droits d'accès, de rectification et d'effacement — contactez notre DPO : dpo@service-du-sang.be"
+    },
+    "nis2": {
+      "title": "Cybersécurité (NIS2)",
+      "text": "Directive (UE) 2022/2555 transposée en droit belge par la loi du 26 avril 2024. Mesures de cybersécurité supervisées par le Centre for Cybersecurity Belgium (CCB)."
+    },
+    "aiAct": {
+      "title": "Intelligence artificielle (AI Act)",
+      "text": "Règlement (UE) 2024/1689 : aucune décision automatisée fondée sur l'IA n'est prise dans le traitement des réclamations."
+    },
+    "copyright": "© 2026 Service du Sang — Croix-Rouge de Belgique. Tous droits réservés.",
+    "legalRefs": "Autorité de protection des données (APD) · Centre for Cybersecurity Belgium (CCB)"
   }
 }

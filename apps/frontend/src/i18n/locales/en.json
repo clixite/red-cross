@@ -88,5 +88,21 @@
     "avgCsat": "Average Satisfaction (CSAT)",
     "byCategory": "Breakdown by Category",
     "bySegment": "Breakdown by Hospital Segment"
+  },
+  "footer": {
+    "gdpr": {
+      "title": "Data protection (GDPR)",
+      "text": "Compliance with Regulation (EU) 2016/679 and the Belgian Act of 30 July 2018. You have rights of access, rectification and erasure — contact our DPO: dpo@service-du-sang.be"
+    },
+    "nis2": {
+      "title": "Cybersecurity (NIS2)",
+      "text": "Directive (EU) 2022/2555 transposed into Belgian law by the Act of 26 April 2024. Cybersecurity measures supervised by the Centre for Cybersecurity Belgium (CCB)."
+    },
+    "aiAct": {
+      "title": "Artificial intelligence (AI Act)",
+      "text": "Regulation (EU) 2024/1689: no automated AI-based decisions are taken in complaint handling."
+    },
+    "copyright": "© 2026 Blood Transfusion Service — Belgian Red Cross. All rights reserved.",
+    "legalRefs": "Data Protection Authority (DPA) · Centre for Cybersecurity Belgium (CCB)"
   }
 }

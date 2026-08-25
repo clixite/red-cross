@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Header } from './components/Header.js';
 import { Sidebar } from './components/Sidebar.js';
+import { Footer } from './components/Footer.js';
 import { LoginView } from './views/LoginView.js';
 import { DocumentsView } from './views/DocumentsView.js';
 import { NewComplaintView } from './views/NewComplaintView.js';
@@ -36,9 +37,12 @@ export const AppShell: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-        <LoginView />
+        <div className="flex-1">
+          <LoginView />
+        </div>
+        <Footer />
       </div>
     );
   }
@@ -89,14 +93,15 @@ export const AppShell: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
       <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-      <div className="flex min-h-[calc(100vh-4rem)]">
+      <div className="flex flex-1 min-h-0">
         <Sidebar currentTab={currentTab} setCurrentTab={setCurrentTab} />
         <main className="flex-1 p-6 lg:p-8 overflow-x-hidden">
           {renderTab()}
         </main>
       </div>
+      <Footer />
     </div>
   );
 };
