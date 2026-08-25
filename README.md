@@ -121,4 +121,4 @@ npm run start:frontend# SPA (port 3000)
 
 ## 7. Avertissement Légal
 
-Ce projet est une **démonstration technique**. Toutes les organisations, personnes, numéros de don et données sont **fictifs**. L'emblème de la croix rouge, juridiquement protégé par les Conventions de Genève, n'est **pas** reproduit : l'identité visuelle est un placeholder textuel neutralisé et paramétrable via les jetons CSS.
+Ce projet est une **démonstration technique**. Toutes les organisations, personnes, numéros de don et données sont **fictifs**. L'emblème de la croix rouge, juridiquement protégé par les Conventions de Genève, n'est **pas** reproduit : l'identité visuelle utilise un **logo neutre original** (monogramme « goutte » en `apps/frontend/src/components/Logo.tsx`) et des jetons de design CSS paramétrables (`--brand-*`) qu'il suffira de remplacer par la charte officielle validée.
