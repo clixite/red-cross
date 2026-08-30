@@ -114,6 +114,7 @@ npm run start:frontend# SPA (port 3000)
 - [`docs/SECURITE.md`](docs/SECURITE.md) — mesures OWASP ASVS
 - [`docs/RGPD.md`](docs/RGPD.md) — conformité données de santé
 - [`docs/EXPLOITATION.md`](docs/EXPLOITATION.md) — hébergement & supervision
+- [`NAS-DEPLOY.md`](NAS-DEPLOY.md) — déploiement sur NAS (Synology/TrueNAS/QNAP)
 - [`docs/DEMO.md`](docs/DEMO.md) — script de démonstration
 - [`docs/ESTIMATION.md`](docs/ESTIMATION.md) — estimation production
 
