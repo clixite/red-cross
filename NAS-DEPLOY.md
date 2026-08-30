@@ -1,14 +1,17 @@
 # Déploiement sur NAS — Portail Clients « Service du Sang »
 
-Guide de déploiement de la stack complète sur un **NAS domestique / de petite structure** (Synology DSM, TrueNAS SCALE, QNAP). Le portail est conçu pour tourner en Docker : il s'installe sur n'importe quel NAS supportant Docker + Docker Compose.
+Guide de déploiement de la stack complète sur un **NAS domestique / de petite structure** (Synology DSM, TrueNAS SCALE, QNAP).
+
+> ⚠️ **DS218 (et modèles ARM Synology) : Docker/Container Manager n'est PAS supporté** (processeur Realtek RTD1296 ARM64). Utilisez la **§12 — Variante native sans Docker**, déployée et validée sur ce NAS.
 
 ---
 
 ## 1. Prérequis
 
-| NAS | Solution Docker | Remarques |
+| NAS | Solution | Remarques |
 |---|---|---|
-| **Synology DSM 7.x** | *Container Manager* (ex-Docker) | Compose v2 supporté ; dossier partagé `docker` recommandé |
+| **Synology DSM 7.x x86** | *Container Manager* (ex-Docker) | Compose v2 supporté ; dossier partagé `docker` recommandé |
+| **Synology ARM (DS218…)** | **Natif (Node + PostgreSQL + MinIO)** — voir §12 | Aucun Docker disponible |
 | **TrueNAS SCALE** | Apps → Docker Compose (custom app) | Stockage via datasets ZFS |
 | **QNAP** | *Container Station* | Compose supporté sur les modèles récents |
 
@@ -200,6 +203,118 @@ Les migrations Prisma s'appliquent **automatiquement au démarrage** du backend 
 ---
 
 ## 11. Sécurité — Vérifications avant mise en service
+
+Pour les modèles ARM (DS218, DS220j…) où Docker/Container Manager est indisponible, la stack tourne nativement : **Node.js + PostgreSQL du DSM + binaire MinIO ARM64**. **Déployé et validé de bout en bout** sur le DS218 de ce projet (DSM 7.3.2, aarch64), servi sur `https://dev.kryssbee.com/croix-rouge/`.
+
+### 12.1 Composants installés
+
+| Composant | Emplacement NAS | Version |
+|---|---|---|
+| Node.js (avec npm) | `/volume1/apps/sfs-portal/node-dist` | v22.19.0 (tarball officiel linux-arm64) |
+| PostgreSQL | intégré DSM (data `/var/services/pgsql`) | 11.11 |
+| MinIO | `/volume1/apps/sfs-portal/minio/minio` | RELEASE.2025-09-07 (binaire ARM64) |
+| Backend + seed | `/volume1/apps/sfs-portal/apps/backend` | dist compilé + prisma (moteur ARM64) |
+| Scripts de démarrage | `/usr/local/etc/rc.d/sfs-portal.sh` | start/stop/restart au boot |
+| Logs | `/volume1/apps/sfs-portal/logs/` | backend.log, minio.log |
+
+### 12.2 Préparation PostgreSQL (une fois)
+
+```sh
+# Le DSM fournit postgres 11.11 (user postgres, socket trust). Créer rôle + base :
+echo 'host sfs_portail sfs_user 127.0.0.1/32 trust' >> /etc/postgresql/pg_hba.conf
+psql -U postgres -c 'SELECT pg_reload_conf();'
+psql -U postgres -c 'CREATE ROLE sfs_user LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;'
+psql -U postgres -c 'CREATE DATABASE sfs_portail OWNER sfs_user;'
+# Vérif : psql -h 127.0.0.1 -U sfs_user -d sfs_portail -c 'SELECT 1'
+```
+
+### 12.3 Installation du code et des dépendances
+
+```sh
+mkdir -p /volume1/apps/sfs-portal
+# transférer l'archive du projet (sources + apps/backend/dist + packages/domain/dist),
+# puis :
+export PATH=/volume1/apps/sfs-portal/node-dist/bin:$PATH
+cd /volume1/apps/sfs-portal
+npm ci --no-audit --no-fund
+cd apps/backend
+node ../../node_modules/prisma/build/index.js generate --schema=prisma/schema.prisma
+DATABASE_URL='postgresql://sfs_user@127.0.0.1:5432/sfs_portail?schema=public' \
+  node ../../node_modules/prisma/build/index.js migrate deploy --schema=prisma/schema.prisma
+DATABASE_URL='postgresql://sfs_user@127.0.0.1:5432/sfs_portail?schema=public' node dist/scripts/seed.js
+```
+
+### 12.4 Environnement du backend (`apps/backend/.env`)
+
+```env
+NODE_ENV=production
+PORT=4000
+DATABASE_URL=postgresql://sfs_user@127.0.0.1:5432/sfs_portail?schema=public
+JWT_SECRET=<généré : head -c 48 /dev/urandom | base64>
+S3_ENDPOINT=https://dev.kryssbee.com          # → proxy nginx (voir 12.5)
+S3_REGION=eu-west-1
+S3_BUCKET=sfs-portal-attachments
+S3_ACCESS_KEY=minioadmin
+S3_SECRET_KEY=minioadmin123
+S3_FORCE_PATH_STYLE=true
+QUALIOS_ADAPTER=manual
+EMAIL_SIMULATION_MODE=true
+ANTIVIRUS_ENABLED=true
+ANTIVIRUS_MOCK_MODE=true
+```
+
+> ⚠️ **S3_ENDPOINT doit être l'hôte PUBLIC sans préfixe de chemin** : le SDK AWS signe le chemin complet ; le proxy nginx ne doit **pas** réécrire le chemin, sinon la signature échoue (403 SignatureDoesNotMatch).
+
+### 12.5 Reverse proxy nginx (vhost `dev.kryssbee.com`)
+
+Dans le fichier DSM `/usr/local/etc/nginx/sites-available/<id>.w3conf` (reverse proxy), ajouter :
+
+```nginx
+location /api/ {
+    proxy_http_version 1.1;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_pass http://localhost:4000;
+}
+
+location ^~ /sfs-portal-attachments {
+    proxy_http_version 1.1;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_pass http://localhost:9000;   # MinIO — chemin préservé (signature AWS)
+}
+```
+
+Puis `nginx -t && nginx -s reload`. ⚠️ DSM régénère ces fichiers lors d'une modification du reverse proxy dans le GUI : re-appliquer si besoin.
+
+### 12.6 Démarrage automatique (boot)
+
+`/usr/local/etc/rc.d/sfs-portal.sh` (voir §12.1) : lance MinIO puis le backend au démarrage du NAS ; `stop` / `restart` manuels possibles. Pensez à `chown kryss:users` les dossiers de l'app.
+
+### 12.7 Vérification (parcours complet validé)
+
+```sh
+curl -s http://127.0.0.1:4000/health                      # {"status":"HEALTHY",...}
+curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:9000/minio/health/live   # 200
+# Depuis un navigateur :
+#   https://dev.kryssbee.com/croix-rouge/   → SPA
+#   login declarant@chu-liege.be / DemoPass2025!
+#   déclaration produit → SFS-AAAA-NNNNN → suivi → doc téléchargeable (URL signée)
+```
+
+### 12.8 Limites connues (variante native)
+
+- **Pièces jointes** : téléchargement via URL pré-signée `https://dev.kryssbee.com/sfs-portal-attachments/...` (fonctionne LAN + Internet via le proxy). L'upload pièces jointes passe par `/api/v1/attachments/upload` (backend → MinIO local) — OK.
+- **Documents seedés** : les PDF sont des **placeholders générés** (aucune donnée réelle), uploadés via script (voir `scripts/nas-minio-seed-docs.js`).
+- **Performance** : ARM 4 cœurs — npm ci et Prisma sont lents au premier déploiement ; le runtime est fluide pour la volumétrie cible (~600 utilisateurs / 300 réclamations/an).
+- **Qualios** : adaptateur `manual` (file back-office) — le portail est 100 % fonctionnel sans l'API Qualios.
+
+---
+
+## 12. Variante NATIVE sans Docker (Synology ARM — DS218 validé)
 
 - [ ] Secrets modifiés dans `.env` (JWT, S3, PostgreSQL) — aucun secret de démo conservé
 - [ ] Accès HTTPS uniquement (reverse proxy) ; console MinIO en réseau local
